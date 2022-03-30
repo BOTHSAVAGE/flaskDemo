@@ -369,6 +369,8 @@ class addgoodsname(FlaskForm):
 
 # 添加订单
 goodsall = goods.query.all()
+gysall = supplier.query.all()
+ywyall = User.query.all()
 
 class increasePurchaseOrders(FlaskForm):
     goods_name = SelectField(
@@ -407,6 +409,7 @@ class increasePurchaseOrders(FlaskForm):
         validators=[
             DataRequired("请选择供应商名称！")
         ],
+        choices=[(i.goods_id, i.goods_name) for i in goodsall],
         coerce=int,
         description="供应商名称",
         render_kw={
@@ -419,6 +422,7 @@ class increasePurchaseOrders(FlaskForm):
         validators=[
             DataRequired("请选择供业务员名称！")
         ],
+        choices=[(i.goods_id, i.goods_name) for i in goodsall],
         coerce=int,
         description="业务员名称",
         render_kw={
@@ -1078,13 +1082,5 @@ class wjpasswd(FlaskForm):
         }
     )
 
-# 备份
-class beifenser(FlaskForm):
-    submit = SubmitField(
-        "立即备份数据",
-        render_kw={
-            "class": "layui-btn",
-            "lay-filter": "formDemo",
-        }
-    )
+
 

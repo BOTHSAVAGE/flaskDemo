@@ -15,8 +15,8 @@ from flask import render_template, make_response, session, redirect, url_for, re
 from app.admin.forms import LoginForm, RegisterForm, addsuppliers, increasePurchaseOrders, purchsearch, \
     returnordersearch, goodssearch, addgoodsname, suppliersserach, salesorderssearch, returnsalessearch, customesserch, \
     addcustomes, warehouseserch, enteringwarehouseserach, outWarehousingsearch, \
-    addsection, adddutys, powerss, addsaleorder, bumens, alertpasswd, wjpasswd, beifenser
-from app.admin.uilt import get_verify_code, bars, lines, pies, on_created
+    addsection, adddutys, powerss, addsaleorder, bumens, alertpasswd, wjpasswd
+from app.admin.uilt import get_verify_code, on_created
 from app.models import User, Purchase, goods, supplier, client, section, duty, inwarehouse, stock, sealreturngoods, \
     warehouse, returngoods, sales, power
 
@@ -834,61 +834,6 @@ def dellckdd():
 
 
 
-# 统计模块
-# 库存统计
-@admin.route("/inventoryStatistics/")
-@admin_login_req
-def inventoryStatistics():
-    _bar,javascript_snippet = pies()
-    return render_template(
-        "admin/inventoryStatistics.html",
-        chart_id=_bar.chart_id,
-        host=url_for('static', filename='assets/js'),
-        renderer=_bar.renderer,
-        my_width="50%",
-        my_height=500,
-        custom_function=javascript_snippet.function_snippet,
-        options=javascript_snippet.option_snippet,
-        script_list=_bar.get_js_dependencies(),
-    )
-
-
-# 订单统计
-@admin.route("/purchasingStatistics/")
-@admin_login_req
-def purchasingStatistics():
-    _bar, javascript_snippet = bars()
-    return render_template(
-        "admin/purchasingStatistics.html",
-        chart_id=_bar.chart_id,
-        host=url_for('static',filename='assets/js'),
-        renderer=_bar.renderer,
-        my_width="50%",
-        my_height=500,
-        custom_function=javascript_snippet.function_snippet,
-        options=javascript_snippet.option_snippet,
-        script_list=_bar.get_js_dependencies(),
-    )
-
-
-# 销售统计
-@admin.route("/salesStatistics/")
-@admin_login_req
-def salesStatistics():
-    line, javascript_snippet = lines()
-    return render_template(
-        "admin/salesStatistics.html",
-        chart_id=line.chart_id,
-        host=url_for('static', filename='assets/js'),
-        renderer=line.renderer,
-        my_width="50%",
-        my_height=500,
-        custom_function=javascript_snippet.function_snippet,
-        options=javascript_snippet.option_snippet,
-        script_list=line.get_js_dependencies(),
-    )
-
-
 # 基本模块
 @admin.route("/persionDetail/",methods=['GET','POST'])
 @admin_login_req
@@ -1066,18 +1011,3 @@ def bumen():
     return render_template("admin/bumen.html",form=form)
 
 
-# 备份
-@admin.route("/beifen/",methods=['GET','POST'])
-@admin_login_req
-@admin_power
-def beifen():
-    key = "传入数据库密码"
-    name = on_created()
-    path = "app/backup/"+name
-    form = beifenser()
-
-    if form.validate_on_submit():
-        os.system("mysqldump -uroot -p{0} sm2.0 > {1}.dump" .format(key,path))
-        os.system("mysqldump  -uroot -p{0} --host=localhost --all-databases> {1}.txt" .format (key,path))
-        flash("备份完成")
-    return render_template("admin/beifen.html",form=form)

@@ -4,8 +4,9 @@
 
 from app.home import home
 from flask import render_template
+from flask import render_template, make_response, session, redirect, url_for, request, flash, abort
 
 
 @home.route("/")
 def index():
-    return render_template("home/index.html")
+    return redirect(request.args.get("next") or url_for("admin.index"))
